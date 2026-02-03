@@ -212,7 +212,7 @@ Intercom must expose and describe all interactive commands so agents can operate
 
 ## SC‑Bridge (WebSocket) Protocol
 SC‑Bridge exposes sidechannel messages over WebSocket and accepts inbound commands.
-It is the **primary way for agents to read and place sidechannel messages**. TTY control works, too but may not be feasible.
+It is the **primary way for agents to read and place sidechannel messages**. Humans can use the interactive TTY, but agents should prefer sockets.
 **Important:** These are **WebSocket JSON** commands. Do **not** type them into the TTY.
 
 ### Auth + Enablement (Mandatory)
