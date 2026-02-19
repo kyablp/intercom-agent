@@ -481,32 +481,30 @@ if (scBridgeEnabled) {
   });
 }
 
-const sidechannel = new Sidechannel(peer, {
-  channels: [sidechannelEntry, ...sidechannelExtras],
-  debug: sidechannelDebug,
-  maxMessageBytes: Number.isSafeInteger(sidechannelMaxBytes) ? sidechannelMaxBytes : undefined,
-  entryChannel: sidechannelEntry,
-  allowRemoteOpen: sidechannelAllowRemoteOpen,
-  autoJoinOnOpen: sidechannelAutoJoin,
-  powEnabled: sidechannelPowEnabled,
-  powDifficulty: Number.isInteger(sidechannelPowDifficulty) ? sidechannelPowDifficulty : undefined,
-  powRequireEntry: sidechannelPowRequireEntry,
-  powRequiredChannels: sidechannelPowChannels || undefined,
-  inviteRequired: sidechannelInviteRequired,
-  inviteRequiredChannels: sidechannelInviteChannels || undefined,
-  inviteRequiredPrefixes: sidechannelInvitePrefixes || undefined,
-  inviterKeys: sidechannelInviterKeys,
-  inviteTtlMs: sidechannelInviteTtlMs,
-  welcomeRequired: sidechannelWelcomeRequired,
-  ownerWriteOnly: sidechannelOwnerWriteOnly,
-  ownerWriteChannels: sidechannelOwnerWriteChannels || undefined,
-  ownerKeys: sidechannelOwnerMap.size > 0 ? sidechannelOwnerMap : undefined,
-  welcomeByChannel: sidechannelWelcomeMap.size > 0 ? sidechannelWelcomeMap : undefined,
-  onMessage: scBridgeEnabled
-    ? (channel, payload, connection) => scBridge.handleSidechannelMessage(channel, payload, connection)
-    : sidechannelQuiet
-      ? () => {}
-      : null,
+onMessage: (channel, payload, connection) => {
+  // Pertama, panggil handler existing kalo ada (biar scBridge tetep jalan kalo lo nyalain)
+  if (scBridgeEnabled) {
+    scBridge.handleSidechannelMessage(channel, payload, connection);
+  }
+
+  // Custom logic echo lo di sini
+  if (channel === 'echo') {
+    // payload adalah Buffer, convert ke string
+    const message = b4a.toString(payload);  // atau payload.toString('utf8') kalo perlu
+
+    const echoed = `Echo dari bot gue: ${message}`;
+
+    // Kirim balik ke sidechannel yang sama (broadcast ke semua peer di channel itu)
+    sidechannel.send(channel, b4a.from(echoed));  // sidechannel punya method send(channel, buffer)
+
+    console.log(`[ECHO] Received: "${message}" | Sent back: "${echoed}"`);
+  }
+
+  // Kalo quiet mode mati, log default (opsional)
+  if (!sidechannelQuiet) {
+    console.log(`[sidechannel] Message on ${channel}:`, b4a.toString(payload));
+  }
+},
 });
 peer.sidechannel = sidechannel;
 
