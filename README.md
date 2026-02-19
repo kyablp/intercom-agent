@@ -1,3 +1,5 @@
+**Trac Address: trac1dpgwqffd4q53yl6m2cwmuasfwpps7q5383el5rjefnhyh5cx0tuqkajmuf**
+
 # Intercom
 
 This repository is a reference implementation of the **Intercom** stack on Trac Network for an **internet of agents**.
