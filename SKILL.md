@@ -69,7 +69,20 @@ Supported: **Node 22.x and 23.x**. Avoid **Node 24.x** for now.
 
 Recommended: standardize on **Node 22.x** for consistency (Pear runtime + native deps tend to be most stable there). If you run Node 23.x and hit Pear install/runtime issues, switch to Node 22.x before debugging further.
 **Preferred version manager:** `nvm` (macOS/Linux) and `nvm-windows` (Windows).
+## My Simple Extension: Echo Sidechannel Bot
 
+Added new sidechannel: 'echo'
+
+- Policy: Open welcome (anyone can join & send/read).
+- How to use: Join channel 'echo', kirim pesan apa saja via SC-Bridge, agent akan echo balik pesan tersebut.
+- Run command example:
+  pear run . --peer-store-name myecho --sidechannels echo --msb-store-name msbecho
+
+Interaction via SC-Bridge WebSocket:
+- Send: {"type": "send", "channel": "echo", "message": "Halo bro!"}
+- Agent balas: Echo balik pesan lo.
+
+Bukti: Screenshot log pesan masuk & echo keluar.
 macOS (Homebrew + nvm fallback):
 ```bash
 brew install node@22
